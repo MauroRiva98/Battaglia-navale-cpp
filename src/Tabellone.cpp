@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void inizializza_tabella(char** tabella, Nave* n){
+void inizializza_tabella(char** tabella, Nave* n){ //Inserisco una nave nella tabella
 	vector <int> vettore = n->get_vettore_valori_cell();
 	if(n->is_verticale()){
 		int colonna = n->get_valore_cella_fisso();
@@ -23,7 +23,7 @@ void inizializza_tabella(char** tabella, Nave* n){
 	}
 }
 
-Tabellone::Tabellone(){
+Tabellone::Tabellone() : Griglia(), Flotta(){
 	this->punti_rimasti = 0;
 }
 
@@ -40,7 +40,7 @@ Tabellone::Tabellone(bool player) : Griglia(), Flotta(player){
 Tabellone::~Tabellone(){
 }
 
-void Tabellone::visualizza(int mod){
+void Tabellone::visualizza(int mod){ //Visualizzo la tabella nascondendo la posizione delle navi che non sono ancora state colpite
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	char** tab = this->get_tabella();
 		if(mod > 0){
@@ -121,7 +121,7 @@ Tabellone& Tabellone::operator--(){
 }
 
 int Tabellone::colpisci_nave(int riga, int colonna){
-	list <Nave*> lista;
+	list <Nave*> lista; //Inserisco nella lista tutte le navi che non sono state affondate
 	if(this->get_nave("Portaerei") != NULL)
 		lista.push_back(this->get_nave("Portaerei"));
 	if(this->get_nave("Corazzata") != NULL)
@@ -135,7 +135,7 @@ int Tabellone::colpisci_nave(int riga, int colonna){
 	if(this->get_nave("Cacciatorpediniere") != NULL)
 		lista.push_back(this->get_nave("Cacciatorpediniere"));
 
-	for (auto const& i : lista) {
+	for (auto const& i : lista) { //Per ogni nave nella lista verifico se è quella che è stata colpita
 	    if(i->is_verticale()){
 	    	if(i->get_valore_cella_fisso() == colonna){
 	    		for(unsigned int j = 0;j < i->get_vettore_valori_cell().size();j++){
@@ -144,11 +144,11 @@ int Tabellone::colpisci_nave(int riga, int colonna){
 	    				if(i->get_punti_vita() == 0){
 	    					cout << endl << i->get_nome() << " affondato/a! " << endl;
 	    					this->reset_nave(i->get_nome());
-	    					return 1;
+	    					return 1; //Se è stata affondata
 	    				}
 	    				else
 	    					cout << endl << "Nave colpita!" << endl;
-	    				return 0;
+	    				return 0; //Colpita ma non affondata
 	    			}
 	    		}
 	    	}
@@ -161,11 +161,11 @@ int Tabellone::colpisci_nave(int riga, int colonna){
 	    				if(i->get_punti_vita() == 0){
 	    					cout << endl << i->get_nome() << " affondato/a! " << endl;
 	    					this->reset_nave(i->get_nome());
-	    					return 1;
+	    					return 1; //Se è stata affondata
 	    				}
 	    				else
 	    					cout << endl << "Nave colpita!" << endl;
-	    		    	return 0;
+	    		    	return 0; //Colpita ma non affondata
 	    		    }
 	    		 }
 	    	}

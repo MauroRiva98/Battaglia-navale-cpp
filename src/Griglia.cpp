@@ -20,7 +20,7 @@ Griglia::~Griglia(){
 	delete [] this->tabella;
 }
 
-void Griglia::visualizza(){
+void Griglia::visualizza(){ //Stampo la tabella esattamente come è
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	for(int i = 0;i < 10;i++){
 			for(int j = 0;j < 10;j++){
@@ -35,7 +35,7 @@ void Griglia::visualizza(){
 	SetConsoleTextAttribute(hConsole, 7);
 }
 
-void Griglia::visualizza(int mod){
+void Griglia::visualizza(int mod){ //0 visualizza indice righe, 1 indice colonne, 2 entrambi
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	if(mod > 0){
 		SetConsoleTextAttribute(hConsole, 15);

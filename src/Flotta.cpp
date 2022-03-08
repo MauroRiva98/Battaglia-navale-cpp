@@ -10,7 +10,7 @@
 
 using namespace std;
 
-template <typename T>
+template <typename T> //Se l'input è un numero tra 1 e 10 lo restituisce diminuito di 1, se è una lettera (maiuscola o minuscola) restituisce il numero corrispondente
 int input_cella (T x) {
 	if((int) x >= 1 && (int) x <= 10)
 		x = x - 1;
@@ -26,7 +26,7 @@ int input_cella (T x) {
 Nave* crea_nave(string nome, int caselle_occupate, Griglia* g){
 	char direzione = 'N';
 	bool verticale = true;
-	do{
+	do{ //Chiedo al giocatore se vuole posizionare la nave in verticale o in orizzontale
 		cout << "Vuoi posizionare la pedina in verticale o in orizzontale [v/o]? ";
 		cin >> direzione;
 		if(cin.fail() || (direzione != 'v' && direzione != 'o' && direzione != 'V' && direzione != 'O')){
@@ -40,8 +40,8 @@ Nave* crea_nave(string nome, int caselle_occupate, Griglia* g){
 	int cella[2];
 	bool collisione = false;
 	bool fuori_mappa = false;
-	do{
-		do{
+	do{ //Prima di inserire la nave nella tabella controllo se non esce dai bordi della mappa e se non si sovrappone con altre navi
+		do{ //Chiedo al giocatore di selezionare la prima casella in cui inserire la nave (quella più in alto se il posizionamento è in verticale, quella più a sinistra se è in orizzontale)
 			int riga;
 			char col;
 			if(verticale)
@@ -225,7 +225,7 @@ Nave* Flotta::get_nave(string nome){
 	return NULL;
 }
 
-void Flotta::reset_nave(string nome){
+void Flotta::reset_nave(string nome){ //Dealloca dalla memoria la nave affondata
 	if(nome == (string) "Portaerei")
 		this->portaerei.reset(NULL);
 	else if(nome == (string) "Corazzata")

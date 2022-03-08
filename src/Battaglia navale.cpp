@@ -23,7 +23,7 @@
 
 using namespace std;
 
-int menu(){
+int menu(){ //Ritorna 1 se giocatore singolo, 2 se multigiocatore
 	cout << "Menu principale\n\n";
 	cout << "1) Giocatore vs Computer" << endl;
 	cout << "2) Giocatore vs Giocatore" << endl << endl;
@@ -57,7 +57,7 @@ int menu(){
 }
 
 template <typename T>
-int input_cella (T x) {
+int input_cella (T x) { //Se l'input è un numero tra 1 e 10 lo restituisce diminuito di 1, se è una lettera (maiuscola o minuscola) restituisce il numero corrispondente
 	if((int) x >= 1 && (int) x <= 10)
 		x = x - 1;
 	else if((int) x >= (int) 'A' && (int) x <= (int) 'J')
@@ -79,7 +79,7 @@ void turno_giocatore(Tabellone* playerA, Tabellone* playerB){
 	int casella[2];
 	bool casella_gia_colpita = false;
 	visualizza_tabella(playerB);
-	do{
+	do{ //Chiedo al giocatore di selezionare una casella finchè quella selezionata non è valida
 		cout << endl << "Inserisci la riga della cella che vuoi colpire [1-10]: ";
 		cin >> riga;
 		cout << endl << "Inserisci la colonna della cella che vuoi colpire [A-J]: ";
@@ -93,11 +93,11 @@ void turno_giocatore(Tabellone* playerA, Tabellone* playerB){
 				cout << endl << "Hai gia' colpito questa casella!" << endl;
 			}
 	}while(casella[0] < 0 || casella[1] < 0 || casella_gia_colpita);
-	if(playerB->get_casella(casella[0], casella[1]) == '~'){
+	if(playerB->get_casella(casella[0], casella[1]) == '~'){ //Se il colpo non è andato a segno
 		cout << endl << "Colpo mancato!" << endl;
 		playerB->set_casella(casella[0], casella[1], 'O');
 	}
-	else if(playerB->get_casella(casella[0], casella[1]) == '|' || playerB->get_casella(casella[0], casella[1]) == '-'){
+	else if(playerB->get_casella(casella[0], casella[1]) == '|' || playerB->get_casella(casella[0], casella[1]) == '-'){ //Se il colpo ha colpito una nave
 		playerB->colpisci_nave(casella[0], casella[1]);
 		playerB->set_casella(casella[0], casella[1], 'X');
 		playerB->operator --();
@@ -112,7 +112,7 @@ void turno_IA(Tabellone* playerA, Tabellone* playerB, bool& priorita, list<int>&
 	visualizza_tabella(playerB);
 	if(priorita && righe.empty())
 		priorita = false;
-	if(!priorita){
+	if(!priorita){ //Se non c'è priorità scelgo la casella in modo casuale
 		do{
 			casella_gia_colpita = false;
 			casella[0] = dist9(rng);
@@ -121,24 +121,25 @@ void turno_IA(Tabellone* playerA, Tabellone* playerB, bool& priorita, list<int>&
 				casella_gia_colpita = true;
 		}while(casella_gia_colpita);
 	}
-	else{
+	else{ //Se c'è priorità scelgo la casella dalle liste righe e colonne
 		casella[0] = righe.front();
 		righe.pop_front();
 		casella[1] = colonne.front();
 		colonne.pop_front();
 	}
+	//Comunico al giocatore la casella selezionata
 	cout << endl << "Riga: " << (casella[0] + 1) << endl;
 	cout << endl << "Colonna: " << (char)(casella[1] + 65) << endl;
-	if(playerB->get_casella(casella[0], casella[1]) == '~'){
+	if(playerB->get_casella(casella[0], casella[1]) == '~'){ //Se il colpo non è andato a segno
 		cout << endl << "Colpo mancato!" << endl;
 		playerB->set_casella(casella[0], casella[1], 'O');
 	}
-	else if(playerB->get_casella(casella[0], casella[1]) == '|' || playerB->get_casella(casella[0], casella[1]) == '-'){
+	else if(playerB->get_casella(casella[0], casella[1]) == '|' || playerB->get_casella(casella[0], casella[1]) == '-'){ //Se il colpo ha colpito una nave
 		int status_nave = playerB->colpisci_nave(casella[0], casella[1]);
 		playerB->set_casella(casella[0], casella[1], 'X');
 		playerB->operator --();
 		if(status_nave == 0){ //Nave colpita
-			if(!priorita){
+			if(!priorita){ //Se non siamo già in modalità priorità riempio le liste con le caselle vicine a quella colpita
 				priorita = true;
 				if(casella[1] < 9){ //Casella a destra
 					if(playerB->get_casella(casella[0], (casella[1] + 1)) != 'X' && playerB->get_casella(casella[0], (casella[1] + 1)) != 'O'){
@@ -165,7 +166,7 @@ void turno_IA(Tabellone* playerA, Tabellone* playerB, bool& priorita, list<int>&
 					}
 				}
 			}
-			else{
+			else{ //Se siamo già in modalità priorità cerco di capire se la nave è posizionata in verticale o in orizzontale
 				bool verticale = false;
 				if(casella[0] < 9){
 					if(playerB->get_casella((casella[0] + 1), casella[1]) == 'X')
@@ -175,7 +176,7 @@ void turno_IA(Tabellone* playerA, Tabellone* playerB, bool& priorita, list<int>&
 					if(playerB->get_casella((casella[0] - 1), casella[1]) == 'X')
 						verticale = true;
 				}
-				if(verticale){
+				if(verticale){ //Se è disposta è in verticale inserisco nelle liste le caselle sopra e sotto
 					if(casella[0] > 0)
 						if(playerB->get_casella((casella[0] - 1), casella[1]) != 'X' && playerB->get_casella((casella[0] - 1), casella[1]) != 'O'){
 							righe.push_front(casella[0] - 1);
@@ -187,7 +188,7 @@ void turno_IA(Tabellone* playerA, Tabellone* playerB, bool& priorita, list<int>&
 							colonne.push_front(casella[1]);
 						}
 				}
-				else{
+				else{ //Se è disposta è in orizzontale inserisco nelle liste le caselle a sinistra e a destra
 					if(casella[1] > 0)
 						if(playerB->get_casella(casella[0], (casella[1] - 1)) != 'X' && playerB->get_casella(casella[0], (casella[1] - 1)) != 'O'){
 							righe.push_front(casella[0]);
@@ -199,6 +200,7 @@ void turno_IA(Tabellone* playerA, Tabellone* playerB, bool& priorita, list<int>&
 							colonne.push_front(casella[1] + 1);
 						}
 				}
+				//Elimino tutte le caselle che non possono contentere la nave (se è in verticale tutte le caselle in colonne diverse, se è in orizzontale quelle in righe diverse)
 				std::list<int>::iterator iter = righe.begin();
 				std::list<int>::iterator end  = righe.end();
 				std::list<int>::iterator iter2 = colonne.begin();
@@ -226,7 +228,7 @@ void turno_IA(Tabellone* playerA, Tabellone* playerB, bool& priorita, list<int>&
 				}
 			}
 		}
-		else if(status_nave == 1){ //Nave affondata
+		else if(status_nave == 1){ //Nave affondata, rimuovo tutti gli elementi nelle liste
 			priorita = false;
 			righe.clear();
 			colonne.clear();
